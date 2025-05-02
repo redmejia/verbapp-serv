@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	now := time.Now()
+
+	// Get the Unix timestamp in seconds
+	unixTimestamp := now.Unix()
+	fmt.Println(unixTimestamp)
 }
