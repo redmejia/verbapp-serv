@@ -1,21 +1,20 @@
 package models
 
-import "time"
-
 // Human ask question to machine
 type Human struct {
-	UserID         string    `json:"user_id"`
-	ConversationID string    `json:"conversation_id,omitempty"`
-	Timestamp      time.Time `json:"timestamp"`
-	Text           string    `json:"text"`
+	UserID         string `json:"user_id"`
+	ConversationID string `json:"conversation_id,omitempty"`
+	Timestamp      int64  `json:"timestamp"`
+	Text           string `json:"text"`
 }
 
 // Machine response to the human text question
 type Machine struct {
-	UserID         string    `json:"user_id"`
-	ConversationID string    `json:"conversation_id,omitempty"`
-	Timestamp      time.Time `json:"timestamp"`
-	Text           string    `json:"text"`
+	UserID         string   `json:"user_id"`
+	ConversationID string   `json:"conversation_id,omitempty"`
+	Timestamp      int64    `json:"timestamp"`
+	Text           string   `json:"text"`
+	Metadata       Metadata `json:"metadata,omitempty"`
 }
 
 type Metadata struct {
