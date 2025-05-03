@@ -1,7 +1,7 @@
 package models
 
 // Human ask question to machine
-type Human struct {
+type TextPrompt struct {
 	UserID         string `json:"user_id"`
 	ConversationID string `json:"conversation_id,omitempty"`
 	Timestamp      int64  `json:"timestamp"`
@@ -9,7 +9,7 @@ type Human struct {
 }
 
 // Machine response to the human text question
-type Machine struct {
+type GeneratedText struct {
 	UserID         string   `json:"user_id"`
 	ConversationID string   `json:"conversation_id,omitempty"`
 	Timestamp      int64    `json:"timestamp"`
