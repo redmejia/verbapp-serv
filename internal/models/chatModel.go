@@ -1,6 +1,6 @@
 package models
 
-// Human ask question to machine
+// User prmpt text
 type TextPrompt struct {
 	UserID         string `json:"user_id"`
 	ConversationID string `json:"conversation_id,omitempty"`
@@ -8,7 +8,7 @@ type TextPrompt struct {
 	Text           string `json:"text"`
 }
 
-// Machine response to the human text question
+// Response from AI
 type GeneratedText struct {
 	UserID         string   `json:"user_id"`
 	ConversationID string   `json:"conversation_id,omitempty"`
