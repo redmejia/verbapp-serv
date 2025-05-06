@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redmejia/internal/handlers"
+	"github.com/redmejia/internal/models"
 	"github.com/redmejia/internal/security"
 )
 
@@ -28,11 +29,20 @@ func IsAuthorized(app *handlers.App, next http.HandlerFunc) http.HandlerFunc {
 				w.WriteHeader(http.StatusUnauthorized)
 
 				if errors.Is(err, jwt.ErrTokenExpired) {
-					json.NewEncoder(w).Encode(map[string]string{"error": "Session expired"})
+					json.NewEncoder(w).Encode(models.ErrorResponse{
+						Code:    http.StatusUnauthorized,
+						Message: "Token expired",
+					})
 				} else if errors.Is(err, jwt.ErrTokenMalformed) {
-					json.NewEncoder(w).Encode(map[string]string{"error": "Token malformed"})
+					json.NewEncoder(w).Encode(models.ErrorResponse{
+						Code:    http.StatusUnauthorized,
+						Message: "Token malformed",
+					})
 				} else {
-					json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized"})
+					json.NewEncoder(w).Encode(models.ErrorResponse{
+						Code:    http.StatusUnauthorized,
+						Message: "Unauthorized",
+					})
 				}
 				return
 			}
@@ -42,7 +52,10 @@ func IsAuthorized(app *handlers.App, next http.HandlerFunc) http.HandlerFunc {
 		} else {
 			w.Header().Add("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Forbidden"})
+			json.NewEncoder(w).Encode(models.ErrorResponse{
+				Code:    http.StatusUnauthorized,
+				Message: "Unauthorized",
+			})
 		}
 	})
 }
