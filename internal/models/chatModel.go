@@ -10,6 +10,7 @@ type TextPrompt struct {
 
 // Response from AI
 type GeneratedText struct {
+	ChatID         string   `json:"chat_id"`
 	UserID         string   `json:"user_id"`
 	ConversationID string   `json:"conversation_id,omitempty"`
 	Timestamp      int64    `json:"timestamp"`
