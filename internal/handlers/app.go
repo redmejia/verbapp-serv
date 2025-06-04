@@ -4,6 +4,6 @@ import "log"
 
 type App struct {
 	InfoLog, ErrorLog *log.Logger
-	ApiKey            string // not needed
+	GeminiKey         string
 	JwtKey            string
 }

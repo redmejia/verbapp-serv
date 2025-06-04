@@ -47,6 +47,8 @@ func IsAuthorized(app *handlers.App, next http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 			if isValid {
+				// ctx := context.WithValue(r.Context(), "user_id", claims.UserID)
+				// next.ServeHTTP(w, r.WithContext(ctx))
 				next.ServeHTTP(w, r)
 			}
 		} else {

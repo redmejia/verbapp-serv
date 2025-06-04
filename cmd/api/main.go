@@ -42,10 +42,13 @@ func main() {
 
 	infoLog.Println("TOKEN: ", token)
 
+	geminiKey := os.Getenv("GEMINI_API_KEY")
+
 	app := &handlers.App{
-		InfoLog:  infoLog,
-		ErrorLog: errorLog,
-		JwtKey:   jwtKey,
+		InfoLog:   infoLog,
+		ErrorLog:  errorLog,
+		GeminiKey: geminiKey,
+		JwtKey:    jwtKey,
 	}
 
 	srv := &http.Server{
