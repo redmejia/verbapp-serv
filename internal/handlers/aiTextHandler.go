@@ -51,20 +51,12 @@ func (app *App) AITextHandler(w http.ResponseWriter, r *http.Request) {
 
 		generatedText := "This is a simulated response from the Gemini 2.0-flash model."
 		// app.InfoLog.Println("Generated Text: ", generatedText)
-
+		generatedResponse := app.DB.InsertGeneratedText("Gemini 2.0-flash", "Gemini_AI", conversationID, generatedText)
 		// jsonByte, _ := json.Marshal(&prompt)
 		// app.InfoLog.Println("PROMPT [>] ", string(jsonByte))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(models.GeneratedText{
-			UserID:         "Gemini_AI",
-			ConversationID: conversationID, // Use conversation of the prompt created message or chat
-			Text:           generatedText,
-			Timestamp:      time.Now().Unix(),
-			Metadata: models.Metadata{
-				ModelName: "Gemini 2.0-flash",
-			},
-		})
+		json.NewEncoder(w).Encode(generatedResponse)
 	}
 }
