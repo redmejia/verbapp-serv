@@ -20,7 +20,7 @@ const (
 func StoreConnection() (*sql.DB, error) {
 
 	port, _ := strconv.Atoi(os.Getenv("DBPORT"))
-	host := os.Getenv("HOSTNAME")
+	host := os.Getenv("DBHOST")
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
 	dbname := os.Getenv("POSTGRES_DB")

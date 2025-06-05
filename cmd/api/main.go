@@ -22,14 +22,14 @@ func main() {
 		userID string // test debug
 	)
 
-	defaultPort := os.Getenv("PORT")
-	defaultHost := os.Getenv("HOST")
-	key := os.Getenv("JWT_SECRET")
+	defaultPort := os.Getenv("SERVER_PORT")
+	defaultHost := os.Getenv("SERVER_HOST")
+	jwtSecretKey := os.Getenv("JWT_KEY")
 	uid := os.Getenv("USER_ID")
 
 	flag.StringVar(&port, "port", defaultPort, "Sever port")
 	flag.StringVar(&host, "host", defaultHost, "Sever host")
-	flag.StringVar(&jwtKey, "key", key, "JWT key")
+	flag.StringVar(&jwtKey, "key", jwtSecretKey, "JWT key")
 	flag.StringVar(&userID, "uid", uid, "User id")
 
 	flag.Parse()
@@ -55,10 +55,9 @@ func main() {
 
 	geminiKey := os.Getenv("GEMINI_API_KEY")
 
-	infoLog.Println("GEMINI_API_KEY:", geminiKey)
 	infoLog.Println("PORT:", defaultPort)
 	infoLog.Println("HOST:", defaultHost)
-	infoLog.Println("JWT_SECRET:", key)
+	infoLog.Println("JWT_SECRET:", jwtSecretKey)
 	infoLog.Println("USER_ID:", uid)
 
 	app := &handlers.App{

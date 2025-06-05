@@ -6,7 +6,7 @@ up_build: build
 	@echo "Stop docker images..."
 	docker compose down
 	@echo "Building and Starting docker images ..."
-	docker compose up
+	docker compose up --build 
 
 build:
 	@echo "building ..."

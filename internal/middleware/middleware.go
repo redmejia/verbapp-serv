@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -21,7 +22,7 @@ func IsAuthorized(app *handlers.App, next http.HandlerFunc) http.HandlerFunc {
 
 		if len(autorization) > 0 {
 			token := strings.Split(autorization, " ")
-			isValid, _, err := security.VerifyToken(token[1], app.JwtKey)
+			isValid, claims, err := security.VerifyToken(token[1], app.JwtKey)
 
 			if err != nil {
 
@@ -47,9 +48,10 @@ func IsAuthorized(app *handlers.App, next http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 			if isValid {
-				// ctx := context.WithValue(r.Context(), "user_id", claims.UserID)
-				// next.ServeHTTP(w, r.WithContext(ctx))
-				next.ServeHTTP(w, r)
+				log.Println("User ID: ", claims.UserID)
+				ctx := context.WithValue(r.Context(), "user_id", claims.UserID)
+				next.ServeHTTP(w, r.WithContext(ctx))
+				// next.ServeHTTP(w, r)
 			}
 		} else {
 			w.Header().Add("Content-Type", "application/json")
