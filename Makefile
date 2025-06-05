@@ -1,12 +1,12 @@
 down: clean
 	@echo "clean and down serivices..."
-	docker-compose down
+	docker compose down
 
 up_build: build
 	@echo "Stop docker images..."
-	docker-compose down
+	docker compose down
 	@echo "Building and Starting docker images ..."
-	docker-compose up 
+	docker compose up
 
 build:
 	@echo "building ..."
@@ -15,4 +15,4 @@ build:
 
 clean:
 	@echo "clean..."
-	@ rm cmd/api/dist/chat_service
+	@rm -f cmd/api/dist/chat_service

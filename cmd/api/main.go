@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/redmejia/internal/database"
 	"github.com/redmejia/internal/handlers"
 	"github.com/redmejia/internal/router"
 	"github.com/redmejia/internal/security"
@@ -21,17 +22,27 @@ func main() {
 		userID string // test debug
 	)
 
-	defaultPort := "8080"
-	defaultHost := "127.0.0.1"
+	defaultPort := os.Getenv("PORT")
+	defaultHost := os.Getenv("HOST")
+	key := os.Getenv("JWT_SECRET")
+	uid := os.Getenv("USER_ID")
+
 	flag.StringVar(&port, "port", defaultPort, "Sever port")
 	flag.StringVar(&host, "host", defaultHost, "Sever host")
-	flag.StringVar(&jwtKey, "key", "", "JWT key")
-	flag.StringVar(&userID, "uid", "", "User id")
+	flag.StringVar(&jwtKey, "key", key, "JWT key")
+	flag.StringVar(&userID, "uid", uid, "User id")
 
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	db, err := database.StoreConnection()
+	if err != nil {
+		errorLog.Fatal("error connecting to database:", err)
+		os.Exit(1)
+	}
+	defer db.Close()
 
 	// token gerenation when user registers
 	token, err := security.GenerateToken(jwtKey, userID)
@@ -44,11 +55,22 @@ func main() {
 
 	geminiKey := os.Getenv("GEMINI_API_KEY")
 
+	infoLog.Println("GEMINI_API_KEY:", geminiKey)
+	infoLog.Println("PORT:", defaultPort)
+	infoLog.Println("HOST:", defaultHost)
+	infoLog.Println("JWT_SECRET:", key)
+	infoLog.Println("USER_ID:", uid)
+
 	app := &handlers.App{
 		InfoLog:   infoLog,
 		ErrorLog:  errorLog,
 		GeminiKey: geminiKey,
 		JwtKey:    jwtKey,
+		DB: &database.Store{
+			Db:       db,
+			InfoLog:  infoLog,
+			ErrorLog: errorLog,
+		},
 	}
 
 	srv := &http.Server{
