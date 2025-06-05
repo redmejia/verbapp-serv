@@ -9,9 +9,9 @@ type Chat struct {
 // User prmpt text
 type TextPrompt struct {
 	ChatID         string `json:"chat_id,omitempty"` // Optional, can be used to link to a specific chat
-	UserID         string `json:"user_id"`
+	UserID         string `json:"user_id,onmitempty"`
 	ConversationID string `json:"conversation_id,omitempty"`
-	Timestamp      int64  `json:"timestamp"`
+	Timestamp      int64  `json:"timestamp,omitempty"`
 	Text           string `json:"text"`
 }
 

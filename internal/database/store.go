@@ -16,6 +16,7 @@ type Store struct {
 
 type ChatStore interface {
 	InsertPrompt(prompt *models.TextPrompt) error
+	GetPromptByConversationID(conversationID string) (string, string, error)
 	InsertGeneratedText() string
 	InsertRepley() string
 }
@@ -41,6 +42,22 @@ func (s *Store) InsertPrompt(prompt *models.TextPrompt) error {
 	prompt.ConversationID = converstionID
 
 	return nil
+}
+
+func (s *Store) GetPromptByConversationID(conversationID string) (string, string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	var prompt string
+	query := `select text from prompts where conversation_id = $1`
+
+	row := s.Db.QueryRowContext(ctx, query, conversationID)
+
+	err := row.Scan(&prompt)
+	if err != nil {
+		return "", "", err
+	}
+	return prompt, conversationID, nil
 }
 
 func (s *Store) InsertGeneratedText() string {
