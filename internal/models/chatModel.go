@@ -1,7 +1,6 @@
 package models
 
 type Chat struct {
-	ChatID        string        `json:"chat_id"`
 	Prompt        TextPrompt    `json:"prompt"`
 	GeneratedText GeneratedText `json:"generated_text"`
 }

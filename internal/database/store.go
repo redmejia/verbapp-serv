@@ -16,9 +16,10 @@ type Store struct {
 
 type ChatStore interface {
 	InsertPrompt(prompt *models.TextPrompt) error
+	GetAllChats() []models.Chat
 	GetPromptByConversationID(conversationID string) (string, string, error)
 	InsertGeneratedText(modelName, userID, conversationID, generatedText string) models.GeneratedText
-	InsertRepley() string
+	// InsertRepley() string
 }
 
 func (s *Store) InsertPrompt(prompt *models.TextPrompt) error {
@@ -98,6 +99,62 @@ func (s *Store) InsertGeneratedText(modelName, userID, conversationID, generated
 	return generatedTextResponse
 }
 
-func (s *Store) InsertRepley() string {
-	return ""
+func (s *Store) GetAllChats() []models.Chat {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	query := `select 
+		p.chat_id,
+		p.user_id,
+		p.conversation_id,
+		p.timestamp,
+		p.text,
+		gt.chat_id,
+		gt.user_id,
+		gt.conversation_id,
+		gt.timestamp,
+		gt.text,
+		mt.model_name
+	from prompts p
+	join generated_texts gt on gt.conversation_id = p.conversation_id 
+	join response_metadata mt on mt.conversation_id = p.conversation_id
+	order by p.id desc`
+
+	rows, err := s.Db.QueryContext(ctx, query)
+	if err != nil {
+		s.ErrorLog.Println("error querying all chats:", err)
+	}
+
+	var chats []models.Chat
+	for rows.Next() {
+
+		var prompt models.TextPrompt
+		var generatedText models.GeneratedText
+
+		err := rows.Scan(
+			&prompt.ChatID,
+			&prompt.UserID,
+			&prompt.ConversationID,
+			&prompt.Timestamp,
+			&prompt.Text,
+			&generatedText.ChatID,
+			&generatedText.UserID,
+			&generatedText.ConversationID,
+			&generatedText.Timestamp,
+			&generatedText.Text,
+			&generatedText.Metadata.ModelName,
+		)
+
+		if err != nil {
+			s.ErrorLog.Println("error scanning row:", err)
+			continue
+		}
+
+		chats = append(chats, models.Chat{
+			Prompt:        prompt,
+			GeneratedText: generatedText,
+		})
+	}
+
+	return chats
 }
