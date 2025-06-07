@@ -118,7 +118,7 @@ func (s *Store) GetAllChats() []models.Chat {
 	from prompts p
 	join generated_texts gt on gt.conversation_id = p.conversation_id 
 	join response_metadata mt on mt.conversation_id = p.conversation_id
-	order by p.id desc`
+	order by p.timestamp asc, gt.timestamp asc`
 
 	rows, err := s.Db.QueryContext(ctx, query)
 	if err != nil {

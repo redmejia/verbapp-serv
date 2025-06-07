@@ -25,6 +25,8 @@ func (app *App) PromptHandler(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 
+		app.InfoLog.Println("Received prompt:", prompt.Text)
+
 		prompt.UserID = userID
 		prompt.Timestamp = time.Now().Unix()
 

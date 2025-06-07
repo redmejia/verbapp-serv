@@ -30,7 +30,7 @@ func (app *App) AITextHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			app.ErrorLog.Println("error getting prompt ", err)
 		}
-
+		// textPrompt is going to be the prompt text API client
 		app.InfoLog.Println("Prompt: I ASK :  ", textPrompt)
 
 		// ctx := context.Background()
