@@ -8,10 +8,10 @@ import (
 	"github.com/redmejia/internal/models"
 )
 
-func (app *App) PromptHandler(w http.ResponseWriter, r *http.Request) {
+func (app *App) ReplyGeneratedTextHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
-		// Handle POST request
+
 		userID := r.Context().Value("user_id").(string)
 
 		var prompt models.TextPrompt
@@ -26,17 +26,29 @@ func (app *App) PromptHandler(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 
-		prompt.UserID = userID
-		prompt.Timestamp = time.Now().Unix()
-
-		err = app.DB.InsertPrompt(&prompt)
+		// GET the text from generated_texts
+		generatedText, err := app.DB.GetGeneratedTextByConversationID(prompt.ConversationID)
 		if err != nil {
-			app.ErrorLog.Println("error inserting prompt into database", err)
+			app.ErrorLog.Println("error getting conversation text", err)
+		}
+
+		app.InfoLog.Println(generatedText)
+
+		var reply models.ReplyText
+		reply.UserID = userID
+		reply.Reply = generatedText
+		reply.Text = prompt.Text
+		reply.Timestamp = time.Now().Unix()
+
+		// insert record reply generated text and the reply user text into reply_prompts
+		err = app.DB.InsertReplyPromptWithReplyText(&reply)
+		if err != nil {
+			app.ErrorLog.Println("error inserting reply text into database", err)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(prompt)
+		json.NewEncoder(w).Encode(reply)
 
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -46,4 +58,5 @@ func (app *App) PromptHandler(w http.ResponseWriter, r *http.Request) {
 			Message: "The HTTP method used is not supported for this resource.",
 		})
 	}
+
 }

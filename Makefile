@@ -1,6 +1,10 @@
 down: clean
-	@echo "clean and down serivices..."
+	@echo "Clean and down serivices..."
 	docker compose down
+
+start: clean build
+	@echo "Starting..."
+	docker compose up --build 
 
 up_build: build
 	@echo "Stop docker images..."
@@ -9,10 +13,10 @@ up_build: build
 	docker compose up --build 
 
 build:
-	@echo "building ..."
+	@echo "Building..."
 	@GOOS=linux  CGO_ENABLED=0 go build -o cmd/api/dist/chat_service cmd/api/main.go
 
 
 clean:
-	@echo "clean..."
+	@echo "Clean..."
 	@rm -f cmd/api/dist/chat_service
